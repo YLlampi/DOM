@@ -1,0 +1,24 @@
+import requests
+from bs4 import BeautifulSoup
+
+def scrape_tripadvisor(url):
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        title = soup.title.text.strip()
+        print(f'Título: {title}')
+
+        reviews = soup.find_all('div', class_='review-container')
+
+        for review in reviews:
+            user = review.find('div', class_='info_text').text.strip()
+            content = review.find('q', class_='IRsGHoPm').text.strip()
+            print(f'Usuario: {user}\nReseña: {content}\n{"="*30}')
+
+    else:
+        print(f'Error al realizar la solicitud. Código de estado: {response.status_code}')
+
+tripadvisor_url = 'https://www.tripadvisor.com/Restaurant_Review-g60763-d802684-Reviews-Per_Sebastian-New_York_City_New_York.html'
+scrape_tripadvisor(tripadvisor_url)
